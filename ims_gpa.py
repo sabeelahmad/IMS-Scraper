@@ -5,6 +5,8 @@ from tabulate import tabulate
 import pytesseract
 import cv2
 import pandas as pd
+from matplotlib import pyplot as plt
+import seaborn as sns
 
 URL = "https://imsnsit.org/imsnsit/studentsnapshot.php"
 
@@ -144,8 +146,38 @@ print(f"Roll Number : {student_details['Roll Number']}")
 print(f"Branch/Department : {student_details['Department']}")
 print(f"Programme: {student_details['Programme']}")
 
+SGPAs = []
+semesters = []
+
 for index, df in enumerate(dataframes):
     print(tabulate(df, headers='keys', tablefmt='psql'))
     sgpa = all_semesters[index]['sgpa']
+    SGPAs.append(sgpa)
+    semesters.append(index+1)
     print(f"SGPA for semester {index + 1} = {sgpa}")
 print(f"CGPA after {semesters_declared} semesters = {CGPA}")
+
+# Visualization / Plots
+
+# Merge all semester dfs into one for easier and more options of visualization
+df = pd.concat(dataframes)
+df.columns = ['Subject', 'Credits', 'Grade']
+df = df.reset_index()
+
+# Plotting count of grades acquired over all semesters
+sns.set()
+sns.countplot(df.Grade)
+plt.title('Counts of grades acquired over all semesters')
+plt.show()
+
+# Plotting progression of sgpa over semesters
+tdf = pd.DataFrame({
+    'Semester': semesters,
+    'SGPA': SGPAs
+})
+
+sns.lineplot(x='Semester', y='SGPA', data=tdf)
+plt.title('SGPA Progression over all semesters')
+plt.show()
+
+# Generate PDF Report - (Student Data, Dataframes, SGPA, CGPA, Data Visualizations)
