@@ -171,7 +171,6 @@ sns.set()
 fig = plt.figure(figsize=(5, 5))
 sns.countplot(df.Grade)
 plt.title('Counts of grades acquired over all semesters')
-plt.show()
 fig.savefig(os.listdir()[0] + '/templates/figure1.png', dpi=fig.dpi)
 # Plotting progression of sgpa over semesters
 tdf = pd.DataFrame({
@@ -181,7 +180,6 @@ tdf = pd.DataFrame({
 fig = plt.figure(figsize=(5, 5))
 sns.lineplot(x='Semester', y='SGPA', data=tdf)
 plt.title('SGPA Progression over all semesters')
-plt.show()
 fig.savefig(os.listdir()[0] + '/templates/figure2.png', dpi=fig.dpi)
 
 # Generate PDF Report - (Student Data, Dataframes, SGPA, CGPA, Data Visualizations)
@@ -196,7 +194,7 @@ data = {
     'programme': student_details['Programme'],
     'semesters': semesters,
     'sgpas': SGPAs,
-    'dfs': [df.to_html() for df in dataframes],
+    'dfs': [df.to_html(classes=['table', 'table-bordered']) for df in dataframes],
     'cgpa': CGPA
 }
 output = template.render(data=data)
@@ -206,3 +204,4 @@ with open(os.listdir()[0] + '/templates/final_report.html', 'w') as f:
     f.write(output)
 
 pdfkit.from_file(os.listdir()[0] + '/templates/final_report.html', os.listdir()[0] + '/report.pdf')
+print('Your performance PDF report is ready! Check the report.pdf file in the script directory!')
