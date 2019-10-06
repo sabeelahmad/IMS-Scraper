@@ -9,6 +9,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import seaborn as sns
 import os
+import pdfkit
 
 URL = "https://imsnsit.org/imsnsit/studentsnapshot.php"
 
@@ -203,3 +204,5 @@ output = template.render(data=data)
 # Save to html
 with open(os.listdir()[0] + '/templates/final_report.html', 'w') as f:
     f.write(output)
+
+pdfkit.from_file(os.listdir()[0] + '/templates/final_report.html', os.listdir()[0] + '/report.pdf')
