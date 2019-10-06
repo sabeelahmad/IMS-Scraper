@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ data.name }}'s Performance Report</title>
+</head>
+<body>
+    <div>
+        <h3>Name - {{ data.name }}</h3>
+        <h4>Roll Number - {{ data.roll_number }}</h4>
+        <h5>Department / Branch - {{ data.department }}</h5>
+        <h5>Programme - {{ data.programme }}</h5>
+    </div>
+
+    {% for sem in data.semesters %}
+        <div>
+            <p>Your performance for Semester {{ sem }} </p>
+            {{ data.dfs[sem-1] }}
+            <p>SGPA for Semester {{ sem }} is <b>{{ data.sgpas[sem-1] }}</b></p>
+        </div>
+    {% endfor %}
+
+    <p>Your cumulative CGPA is <b>{{ data.cgpa }}</b></p>
+
+    <div>
+        <h4>Your Performance Graphs</h4>
+        <img src="figure1.png" alt="Count of grades acquired">
+        <br>
+        <img src="figure2.png" alt="SGPA progression over semesters">
+    </div>
+</body>
+</html>
