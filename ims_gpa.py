@@ -10,8 +10,12 @@ from matplotlib import pyplot as plt
 import seaborn as sns
 import os
 import pdfkit
+import smtplib
+from email.message import EmailMessage
 
 URL = "https://imsnsit.org/imsnsit/studentsnapshot.php"
+SENDER_EMAIL = "sabeelbasharat@gmail.com"
+EMAIL_PASS = os.environ.get('IMS_SCRAPER_PASS')
 
 def decode(soup):
     # Download captcha image
@@ -40,6 +44,7 @@ def take_details():
     details = {}
     details['roll_number'] = input('Enter Roll Number : ')
     details['father_number'] = input('Enter Father Phone Number : ')
+    details['email'] = input('Enter Email Address : ')
     return details
 
 # Grade to weighted credit mapping
@@ -204,4 +209,20 @@ with open(os.listdir()[0] + '/templates/final_report.html', 'w') as f:
     f.write(output)
 
 pdfkit.from_file(os.listdir()[0] + '/templates/final_report.html', os.listdir()[0] + '/report.pdf')
-print('Your performance PDF report is ready! Check the report.pdf file in the script directory!')
+
+# Send pdf to email of student
+msg = EmailMessage()
+msg['Subject'] = f"{student_details['Name']}'s Performance Report"
+msg['From'] = SENDER_EMAIL
+msg['TO'] = details['email']
+msg.set_content('Please find attached your peformance report.')
+
+with open(os.listdir()[0] + '/report.pdf', 'rb') as f:
+    file_data = f.read()
+    file_name = f.name
+
+msg.add_attachment(file_data, maintype='application/pdf', subtype='pdf', filename=file_name)
+
+with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+    smtp.login(SENDER_EMAIL, EMAIL_PASS)
+    smtp.send_message(msg)
